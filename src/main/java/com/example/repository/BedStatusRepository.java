@@ -1,4 +1,8 @@
 package com.example.repository;
 
-public class BedStatusRepository {
+import com.example.entity.BedStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BedStatusRepository extends JpaRepository<BedStatus, String> {
 }
+

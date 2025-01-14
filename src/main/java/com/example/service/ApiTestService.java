@@ -2,182 +2,114 @@ package com.example.service;
 
 import com.example.api.BedStatusApiClient;
 import com.example.api.HospitalInfoApiClient;
-import com.example.dto.ApiResponse;
-import com.example.dto.BedAvailabilityItem;
-import com.example.dto.EmergencyInfoItem;
-import com.example.dto.HospitalItem;
-import com.example.entity.Hospitals;
-import com.example.entity.HospitalBedAvailability;
-import com.example.entity.HospitalEmergencyInfo;
+import com.example.dto.BedStatusResponse;
+import com.example.dto.HospitalInfoResponse;
+import com.example.entity.BedStatus;
+import com.example.entity.HospitalInfo;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ApiTestService {
-
     private final BedStatusApiClient bedStatusApiClient;
     private final HospitalInfoApiClient hospitalInfoApiClient;
-    private final HospitalsService hospitalsService;
-    private final HospitalBedAvailabilityService bedAvailabilityService;
-    private final HospitalEmergencyInfoService emergencyInfoService;
+    private final BedStatusService bedStatusService;
+    private final HospitalInfoService hospitalInfoService;
+    private final XmlMapper xmlMapper;
 
     public ApiTestService(BedStatusApiClient bedStatusApiClient,
                           HospitalInfoApiClient hospitalInfoApiClient,
-                          HospitalsService hospitalsService,
-                          HospitalBedAvailabilityService bedAvailabilityService,
-                          HospitalEmergencyInfoService emergencyInfoService) {
+                          BedStatusService bedStatusService,
+                          HospitalInfoService hospitalInfoService,
+                          XmlMapper xmlMapper) {
         this.bedStatusApiClient = bedStatusApiClient;
         this.hospitalInfoApiClient = hospitalInfoApiClient;
-        this.hospitalsService = hospitalsService;
-        this.bedAvailabilityService = bedAvailabilityService;
-        this.emergencyInfoService = emergencyInfoService;
+        this.bedStatusService = bedStatusService;
+        this.hospitalInfoService = hospitalInfoService;
+        this.xmlMapper = xmlMapper;
     }
 
     public void testApiCalls() {
-        // 병상 정보 호출
-        List<String> districts = List.of("강남구", "서초구", "송파구");
-        String stage1 = "서울특별시";
-
+        List<String> districts = List.of("강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구",
+                "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구",
+                "용산구", "은평구", "종로구", "중구", "중랑구");
         for (String district : districts) {
             try {
-                System.out.println("Fetching Bed Status for: " + district);
-                String bedStatusResponse = bedStatusApiClient.fetchBedStatus(stage1, district);
-
-                // XML 선언부 제거
-                String cleanBedStatusResponse = removeXmlDeclaration(bedStatusResponse);
-
-                // 병원 및 병상 데이터 파싱
-                List<Hospitals> hospitals = parseHospitals(cleanBedStatusResponse);
-                List<HospitalBedAvailability> bedAvailabilities = parseBedAvailability(cleanBedStatusResponse);
-
-                // 병원 및 병상 데이터 저장
-                for (Hospitals hospital : hospitals) {
-                    Hospitals savedHospital = hospitalsService.save(hospital);
-                    for (HospitalBedAvailability bed : bedAvailabilities) {
-                        if (bed.getHpid().equals(savedHospital.getHpid())) {
-                            bed.setHospitalId(savedHospital.getId());
-                            bedAvailabilityService.save(bed);
-                        }
-                    }
+                String responseXml = bedStatusApiClient.fetchBedStatus("서울특별시", district);
+                List<BedStatus> bedStatusList = parseBedStatus(responseXml);
+                for (BedStatus bedStatus : bedStatusList) {
+                    bedStatusService.save(bedStatus);
                 }
-
-                Thread.sleep(1000); // 1초 대기
             } catch (Exception e) {
-                System.err.println("Error fetching Bed Status for " + district + ": " + e.getMessage());
+                System.err.println("Error parsing BedStatus for district " + district + ": " + e.getMessage());
             }
         }
 
-        // 병원 정보 호출
         try {
-            System.out.println("Fetching Hospital Info for region: 서울특별시");
-            String hospitalInfoResponse = hospitalInfoApiClient.fetchHospitalInfo("서울특별시", 100);
-
-            // XML 선언부 제거
-            String cleanHospitalInfoResponse = removeXmlDeclaration(hospitalInfoResponse);
-
-            // 응급실 데이터 파싱 및 저장
-            List<HospitalEmergencyInfo> emergencyInfos = parseEmergencyInfo(cleanHospitalInfoResponse);
-            for (HospitalEmergencyInfo emergencyInfo : emergencyInfos) {
-                emergencyInfoService.save(emergencyInfo);
+            String responseXml = hospitalInfoApiClient.fetchHospitalInfo("서울특별시", 100);
+            List<HospitalInfo> hospitalInfoList = parseHospitalInfo(responseXml);
+            for (HospitalInfo hospitalInfo : hospitalInfoList) {
+                hospitalInfoService.save(hospitalInfo);
             }
         } catch (Exception e) {
-            System.err.println("Error fetching Hospital Info: " + e.getMessage());
+            System.err.println("Error parsing HospitalInfo: " + e.getMessage());
         }
     }
 
-    // XML 선언부 제거 메서드
-    private String removeXmlDeclaration(String xml) {
-        if (xml.startsWith("<?xml")) {
-            int startIndex = xml.indexOf("?>") + 2; // 선언부 끝 이후
-            return xml.substring(startIndex).trim(); // 선언부 제거 후 반환
-        }
-        return xml; // 선언부가 없으면 원본 반환
-    }
-
-    private List<Hospitals> parseHospitals(String xmlResponse) {
-        List<Hospitals> hospitals = new ArrayList<>();
+    private List<BedStatus> parseBedStatus(String xml) {
         try {
-            XmlMapper xmlMapper = new XmlMapper();
-            // TypeReference를 사용해 제네릭 타입 정보 전달
-            ApiResponse<HospitalItem> apiResponse = xmlMapper.readValue(
-                    xmlResponse,
-                    new com.fasterxml.jackson.core.type.TypeReference<ApiResponse<HospitalItem>>() {}
-            );
+            BedStatusResponse response = xmlMapper.readValue(xml, BedStatusResponse.class);
+            List<BedStatusResponse.Body.Item> items = response.getBody().getItems();
 
-            for (HospitalItem item : apiResponse.getBody().getItems()) {
-                Hospitals hospital = new Hospitals();
-                hospital.setHpid(item.getHpid());
-                hospital.setDutyname(item.getDutyName());
-                hospital.setDutyTel3(item.getDutyTel3());
-                hospitals.add(hospital);
-            }
+            return items.stream().map(item -> {
+                BedStatus bedStatus = new BedStatus();
+                bedStatus.setHpid(item.getHpid());
+                bedStatus.setHvidate(item.getHvidate());
+                bedStatus.setHvec(item.getHvec());
+                bedStatus.setHvcc(item.getHvcc());
+                bedStatus.setHvncc(item.getHvncc());
+                bedStatus.setHvccc(item.getHvccc());
+                bedStatus.setHvicc(item.getHvicc());
+                bedStatus.setHvgc(item.getHvgc());
+                bedStatus.setDutyName(item.getDutyName());
+                bedStatus.setDutyTel3(item.getDutyTel3());
+                return bedStatus;
+            }).collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to parse BedStatus XML", e);
         }
-        return hospitals;
     }
 
-
-    private List<HospitalBedAvailability> parseBedAvailability(String xmlResponse) {
-        List<HospitalBedAvailability> bedAvailabilities = new ArrayList<>();
+    private List<HospitalInfo> parseHospitalInfo(String xml) {
         try {
-            XmlMapper xmlMapper = new XmlMapper();
-            // TypeReference를 사용해 제네릭 타입 정보 전달
-            ApiResponse<BedAvailabilityItem> apiResponse = xmlMapper.readValue(
-                    xmlResponse,
-                    new com.fasterxml.jackson.core.type.TypeReference<ApiResponse<BedAvailabilityItem>>() {}
-            );
+            HospitalInfoResponse response = xmlMapper.readValue(xml, HospitalInfoResponse.class);
+            List<HospitalInfoResponse.Body.Item> items = response.getBody().getItems();
 
-            for (BedAvailabilityItem item : apiResponse.getBody().getItems()) {
-                HospitalBedAvailability bed = new HospitalBedAvailability();
-                bed.setHpid(item.getHpid());
-                bed.setHvidate(item.getHvidate());
-                bed.setHvec(item.getHvec());
-                bed.setHvoc(item.getHvoc());
-                bed.setHvcc(item.getHvcc());
-                bed.setHvncc(item.getHvncc());
-                bed.setHvccc(item.getHvccc());
-                bed.setHvicc(item.getHvicc());
-                bed.setHvgc(item.getHvgc());
-
-                bedAvailabilities.add(bed);
-            }
+            return items.stream().map(item -> {
+                HospitalInfo hospitalInfo = new HospitalInfo();
+                hospitalInfo.setHpid(item.getHpid());
+                hospitalInfo.setDutyName(item.getDutyName());
+                hospitalInfo.setDutyAddr(item.getDutyAddr());
+                hospitalInfo.setDutyEmcls(item.getDutyEmcls());
+                hospitalInfo.setDutyEmclsName(item.getDutyEmclsName());
+                hospitalInfo.setWgs84Lon(item.getWgs84Lon());
+                hospitalInfo.setWgs84Lat(item.getWgs84Lat());
+                return hospitalInfo;
+            }).collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to parse HospitalInfo XML", e);
         }
-        return bedAvailabilities;
     }
-
-
-    private List<HospitalEmergencyInfo> parseEmergencyInfo(String xmlResponse) {
-        List<HospitalEmergencyInfo> emergencyInfos = new ArrayList<>();
-        try {
-            XmlMapper xmlMapper = new XmlMapper();
-            // TypeReference를 사용해 제네릭 타입 정보 전달
-            ApiResponse<EmergencyInfoItem> apiResponse = xmlMapper.readValue(
-                    xmlResponse,
-                    new com.fasterxml.jackson.core.type.TypeReference<ApiResponse<EmergencyInfoItem>>() {}
-            );
-
-            for (EmergencyInfoItem item : apiResponse.getBody().getItems()) {
-                HospitalEmergencyInfo info = new HospitalEmergencyInfo();
-                info.setDutyAddr(item.getDutyAddr());
-                info.setDutyEmcls(item.getDutyEmcls());
-                info.setDutyEmclsName(item.getDutyEmclsName());
-                info.setWgs84Lon(item.getWgs84Lon());
-                info.setWgs84Lat(item.getWgs84Lat());
-                emergencyInfos.add(info);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return emergencyInfos;
-    }
-
 }
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,8 @@
 package com.example.repository;
 
-public class HospitalInfoRepository {
+import com.example.entity.HospitalInfo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HospitalInfoRepository extends JpaRepository<HospitalInfo, String> {
 }
+
