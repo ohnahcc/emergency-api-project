@@ -53,8 +53,13 @@ public class HospitalInfoResponse {
 
             @JacksonXmlProperty(localName = "wgs84Lat")
             private Double wgs84Lat;
+
+            @JacksonXmlProperty(localName = "dutyTel3")
+            private String dutyTel3;
         }
     }
 }
+
+
 
 
