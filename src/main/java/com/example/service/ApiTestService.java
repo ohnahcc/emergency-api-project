@@ -24,6 +24,7 @@ import java.util.List;
 @Transactional
 public class ApiTestService {
 
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -63,7 +64,7 @@ public class ApiTestService {
             log.info("Parsed {} items from Hospital Info API", items.size());
 
             for (HospitalInfoResponse.Body.Item item : items) {
-                Hospitals hospital = saveOrUpdateHospital(item.getHpid(), item.getDutyName(), null);
+                Hospitals hospital = saveOrUpdateHospital(item.getHpid(), item.getDutyName(), item.getDutyTel3());
                 saveEmergencyInfo(hospital, item);
             }
         } catch (IOException | IllegalArgumentException e) {
@@ -155,6 +156,17 @@ public class ApiTestService {
                 item.getHv41(),
                 item.getHv42(),
                 item.getHv43(),
+                item.getHvctayn(),
+                item.getHvmriayn(),
+                item.getHvangioayn(),
+                item.getHvventiayn(),
+                item.getHvventisoayn(),
+                item.getHvincuayn(),
+                item.getHvcrrtayn(),
+                item.getHvecmoayn(),
+                item.getHvoxyayn(),
+                item.getHvhypoayn(),
+                item.getHvamyn(),
                 item.getHvidate() != null ? item.getHvidate().toString() : null,
                 LocalDateTime.now()
         );

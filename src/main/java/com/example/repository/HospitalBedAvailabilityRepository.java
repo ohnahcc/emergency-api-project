@@ -17,12 +17,14 @@ public interface HospitalBedAvailabilityRepository extends JpaRepository<Hospita
             "hospital_id, hvec, hvoc, hvcc, hvncc, hvccc, hvicc, hvgc, hv2, hv3, hv4, hv5, hv6, hv7, " +
             "hv8, hv9, hv10, hv11, hv13, hv14, hv15, hv16, hv17, hv18, hv19, hv21, hv22, hv23, hv24, " +
             "hv25, hv26, hv27, hv28, hv29, hv30, hv31, hv32, hv33, hv34, hv35, hv36, hv37, hv38, hv39, " +
-            "hv40, hv41, hv42, hv43, hvidate, updated_at) " +
+            "hv40, hv41, hv42, hv43, hvctayn, hvmriayn, hvangioayn, hvventiayn, hvventisoayn, hvincuayn, " +
+            "hvcrrtayn, hvecmoayn, hvoxyayn, hvhypoayn, hvamyn, hvidate, updated_at) " +
             "VALUES (" +
             ":hospitalId, :hvec, :hvoc, :hvcc, :hvncc, :hvccc, :hvicc, :hvgc, :hv2, :hv3, :hv4, :hv5, :hv6, :hv7, " +
             ":hv8, :hv9, :hv10, :hv11, :hv13, :hv14, :hv15, :hv16, :hv17, :hv18, :hv19, :hv21, :hv22, :hv23, :hv24, " +
             ":hv25, :hv26, :hv27, :hv28, :hv29, :hv30, :hv31, :hv32, :hv33, :hv34, :hv35, :hv36, :hv37, :hv38, :hv39, " +
-            ":hv40, :hv41, :hv42, :hv43, :hvidate, :updatedAt) " +
+            ":hv40, :hv41, :hv42, :hv43, :hvctayn, :hvmriayn, :hvangioayn, :hvventiayn, :hvventisoayn, :hvincuayn, " +
+            ":hvcrrtayn, :hvecmoayn, :hvoxyayn, :hvhypoayn, :hvamyn, :hvidate, :updatedAt) " +
             "ON CONFLICT (hospital_id) DO UPDATE SET " +
             "hvec = EXCLUDED.hvec, hvoc = EXCLUDED.hvoc, hvcc = EXCLUDED.hvcc, hvncc = EXCLUDED.hvncc, hvccc = EXCLUDED.hvccc, " +
             "hvicc = EXCLUDED.hvicc, hvgc = EXCLUDED.hvgc, hv2 = EXCLUDED.hv2, hv3 = EXCLUDED.hv3, hv4 = EXCLUDED.hv4, " +
@@ -33,7 +35,11 @@ public interface HospitalBedAvailabilityRepository extends JpaRepository<Hospita
             "hv27 = EXCLUDED.hv27, hv28 = EXCLUDED.hv28, hv29 = EXCLUDED.hv29, hv30 = EXCLUDED.hv30, hv31 = EXCLUDED.hv31, " +
             "hv32 = EXCLUDED.hv32, hv33 = EXCLUDED.hv33, hv34 = EXCLUDED.hv34, hv35 = EXCLUDED.hv35, hv36 = EXCLUDED.hv36, " +
             "hv37 = EXCLUDED.hv37, hv38 = EXCLUDED.hv38, hv39 = EXCLUDED.hv39, hv40 = EXCLUDED.hv40, hv41 = EXCLUDED.hv41, " +
-            "hv42 = EXCLUDED.hv42, hv43 = EXCLUDED.hv43, hvidate = EXCLUDED.hvidate, updated_at = NOW()",
+            "hv42 = EXCLUDED.hv42, hv43 = EXCLUDED.hv43, hvctayn = EXCLUDED.hvctayn, hvmriayn = EXCLUDED.hvmriayn, " +
+            "hvangioayn = EXCLUDED.hvangioayn, hvventiayn = EXCLUDED.hvventiayn, hvventisoayn = EXCLUDED.hvventisoayn, " +
+            "hvincuayn = EXCLUDED.hvincuayn, hvcrrtayn = EXCLUDED.hvcrrtayn, hvecmoayn = EXCLUDED.hvecmoayn, " +
+            "hvoxyayn = EXCLUDED.hvoxyayn, hvhypoayn = EXCLUDED.hvhypoayn, hvamyn = EXCLUDED.hvamyn, " +
+            "hvidate = EXCLUDED.hvidate, updated_at = NOW()",
             nativeQuery = true)
     void saveOrUpdate(
             @Param("hospitalId") Long hospitalId,
@@ -84,6 +90,17 @@ public interface HospitalBedAvailabilityRepository extends JpaRepository<Hospita
             @Param("hv41") Integer hv41,
             @Param("hv42") Boolean hv42,
             @Param("hv43") Boolean hv43,
+            @Param("hvctayn") Boolean hvctayn,
+            @Param("hvmriayn") Boolean hvmriayn,
+            @Param("hvangioayn") Boolean hvangioayn,
+            @Param("hvventiayn") Boolean hvventiayn,
+            @Param("hvventisoayn") Boolean hvventisoayn,
+            @Param("hvincuayn") Boolean hvincuayn,
+            @Param("hvcrrtayn") Boolean hvcrrtayn,
+            @Param("hvecmoayn") Boolean hvecmoayn,
+            @Param("hvoxyayn") Boolean hvoxyayn,
+            @Param("hvhypoayn") Boolean hvhypoayn,
+            @Param("hvamyn") Boolean hvamyn,
             @Param("hvidate") String hvidate,
             @Param("updatedAt") LocalDateTime updatedAt
     );
