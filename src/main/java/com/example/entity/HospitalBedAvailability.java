@@ -17,7 +17,7 @@ public class HospitalBedAvailability {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "hospital_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "hospital_id", referencedColumnName = "hpid", nullable = false)
     private Hospitals hospital;
 
     @Column(name = "hvec")
@@ -193,6 +193,9 @@ public class HospitalBedAvailability {
 
     @Column(name = "hvamyn")
     private Boolean hvamyn;       // 구급차 가용 여부
+
+    @Column(name = "hvs01")
+    private Integer hvs01; // 일반 병상 기준
 
     @Column(name = "hvidate")
     private String hvidate; // 병상 정보 업데이트 시간

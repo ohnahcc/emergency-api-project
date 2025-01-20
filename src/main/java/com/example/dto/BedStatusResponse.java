@@ -240,6 +240,10 @@ public class BedStatusResponse {
 
             @JacksonXmlProperty(localName = "dutyTel3")
             private String dutyTel3;
+
+            @JacksonXmlProperty(localName = "hvs01")
+            private Integer hvs01; // 일반 병상 기준
+
         }
     }
 }

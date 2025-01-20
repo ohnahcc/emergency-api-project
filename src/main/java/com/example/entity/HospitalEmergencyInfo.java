@@ -15,7 +15,7 @@ public class HospitalEmergencyInfo {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "info_id", referencedColumnName = "id")
+    @JoinColumn(name = "info_id", referencedColumnName = "hpid")
     private Hospitals hospital;
 
     @Column(name = "dutyaddr", nullable = false)

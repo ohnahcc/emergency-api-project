@@ -108,7 +108,7 @@ public class ApiTestService {
 
     private void saveBedAvailability(Hospitals hospital, BedStatusResponse.Body.Item item) {
         bedAvailabilityRepository.saveOrUpdate(
-                hospital.getId(),
+                hospital.getHpid(),
                 item.getHvec(),
                 item.getHvoc(),
                 item.getHvcc(),
@@ -167,6 +167,7 @@ public class ApiTestService {
                 item.getHvoxyayn(),
                 item.getHvhypoayn(),
                 item.getHvamyn(),
+                item.getHvs01(),       // 일반 병상 기준
                 item.getHvidate() != null ? item.getHvidate().toString() : null,
                 LocalDateTime.now()
         );
@@ -174,7 +175,7 @@ public class ApiTestService {
 
     private void saveEmergencyInfo(Hospitals hospital, HospitalInfoResponse.Body.Item item) {
         emergencyInfoRepository.saveOrUpdate(
-                hospital.getId(),
+                hospital.getHpid(),
                 item.getDutyAddr(),
                 item.getDutyEmcls(),
                 item.getDutyEmclsName(),

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface HospitalEmergencyInfoRepository extends JpaRepository<HospitalEmergencyInfo, Long> {
-    Optional<HospitalEmergencyInfo> findByInfoId(Long hospitalId);
+    Optional<HospitalEmergencyInfo> findByInfoId(String hospitalId);
     @Modifying
     @Query(value = "INSERT INTO hospital_emergency_info (" +
             "info_id, dutyaddr, dutyemcls, dutyemclsname, wgs84lon, wgs84lat) " +
@@ -22,7 +22,7 @@ public interface HospitalEmergencyInfoRepository extends JpaRepository<HospitalE
             "wgs84lon = EXCLUDED.wgs84lon, " +
             "wgs84lat = EXCLUDED.wgs84lat",
             nativeQuery = true)
-    void saveOrUpdate(@Param("infoId") Long infoId,
+    void saveOrUpdate(@Param("infoId") String infoId,
                       @Param("dutyAddr") String dutyAddr,
                       @Param("dutyEmcls") String dutyEmcls,
                       @Param("dutyEmclsName") String dutyEmclsName,
