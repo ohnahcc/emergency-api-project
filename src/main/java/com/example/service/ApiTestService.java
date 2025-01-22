@@ -10,6 +10,7 @@ import com.example.repository.HospitalBedAvailabilityRepository;
 import com.example.repository.HospitalEmergencyInfoRepository;
 import com.example.repository.HospitalsRepository;
 import com.example.secondrepository.SecondHospitalBedAvailabilityRateRepository;
+import com.example.secondrepository.SecondHospitalBedAvailabilityRepository;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class ApiTestService {
     private final HospitalBedAvailabilityRepository bedAvailabilityRepository;
     private final HospitalEmergencyInfoRepository emergencyInfoRepository;
     private final SecondHospitalBedAvailabilityRateRepository secondHospitalBedAvailabilityRateRepository;
+    private final SecondHospitalBedAvailabilityRepository secondHospitalBedAvailabilityRepository;
     private final XmlMapper xmlMapper;
 
     public ApiTestService(BedStatusApiClient bedStatusApiClient,
@@ -46,6 +48,7 @@ public class ApiTestService {
                           HospitalBedAvailabilityRepository bedAvailabilityRepository,
                           HospitalEmergencyInfoRepository emergencyInfoRepository,
                           SecondHospitalBedAvailabilityRateRepository secondHospitalBedAvailabilityRateRepository,
+                          SecondHospitalBedAvailabilityRepository secondHospitalBedAvailabilityRepository,
                           XmlMapper xmlMapper) {
         this.bedStatusApiClient = bedStatusApiClient;
         this.hospitalInfoApiClient = hospitalInfoApiClient;
@@ -53,6 +56,7 @@ public class ApiTestService {
         this.bedAvailabilityRepository = bedAvailabilityRepository;
         this.emergencyInfoRepository = emergencyInfoRepository;
         this.secondHospitalBedAvailabilityRateRepository = secondHospitalBedAvailabilityRateRepository;
+        this.secondHospitalBedAvailabilityRepository = secondHospitalBedAvailabilityRepository;
         this.xmlMapper = xmlMapper;
     }
 
@@ -393,6 +397,83 @@ public class ApiTestService {
                     bed.getHvidate() != null ? bed.getHvidate().toString() : null,
                     LocalDateTime.now()
             );
+        }
+    }
+
+    @Transactional("secondTransactionManager")
+    public void calculateUtilizationRatesInSecondDB() {
+        List<HospitalBedAvailability> hospitalBeds = bedAvailabilityRepository.findAll(); // 첫 번째 DB에서 데이터 가져오기
+
+        for (HospitalBedAvailability bed : hospitalBeds) {
+            if (bed.getHvs01() != null && bed.getHvs01() > 0) {
+                Integer operation_rate = (int) (((bed.getHvs01() - bed.getHvec()) /bed.getHvs01().floatValue()) * 100);
+
+                // 두 번째 데이터베이스에 저장
+                secondHospitalBedAvailabilityRepository.saveOrUpdate(
+                        bed.getHospital().getHpid(),
+                        bed.getHvec(),
+                        bed.getHvoc(),
+                        bed.getHvcc(),
+                        bed.getHvncc(),
+                        bed.getHvccc(),
+                        bed.getHvicc(),
+                        bed.getHvgc(),
+                        bed.getHv2(),
+                        bed.getHv3(),
+                        bed.getHv4(),
+                        bed.getHv5(),
+                        bed.getHv6(),
+                        bed.getHv7(),
+                        bed.getHv8(),
+                        bed.getHv9(),
+                        bed.getHv10(),
+                        bed.getHv11(),
+                        bed.getHv13(),
+                        bed.getHv14(),
+                        bed.getHv15(),
+                        bed.getHv16(),
+                        bed.getHv17(),
+                        bed.getHv18(),
+                        bed.getHv19(),
+                        bed.getHv21(),
+                        bed.getHv22(),
+                        bed.getHv23(),
+                        bed.getHv24(),
+                        bed.getHv25(),
+                        bed.getHv26(),
+                        bed.getHv27(),
+                        bed.getHv28(),
+                        bed.getHv29(),
+                        bed.getHv30(),
+                        bed.getHv31(),
+                        bed.getHv32(),
+                        bed.getHv33(),
+                        bed.getHv34(),
+                        bed.getHv35(),
+                        bed.getHv36(),
+                        bed.getHv37(),
+                        bed.getHv38(),
+                        bed.getHv39(),
+                        bed.getHv40(),
+                        bed.getHv41(),
+                        bed.getHv42(),
+                        bed.getHv43(),
+                        bed.getHvctayn(),
+                        bed.getHvmriayn(),
+                        bed.getHvangioayn(),
+                        bed.getHvventiayn(),
+                        bed.getHvventisoayn(),
+                        bed.getHvincuayn(),
+                        bed.getHvcrrtayn(),
+                        bed.getHvecmoayn(),
+                        bed.getHvoxyayn(),
+                        bed.getHvhypoayn(),
+                        bed.getHvamyn(),
+                        operation_rate,       // 일반 병상 기준
+                        bed.getHvidate() != null ? bed.getHvidate().toString() : null,
+                        LocalDateTime.now()
+                );
+            }
         }
     }
 
