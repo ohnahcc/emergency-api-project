@@ -16,7 +16,7 @@ public class SchedulerService {
      * 1. 일주일마다 Hospital 및 HospitalEmergencyInfo 업데이트 (매주 월요일 자정 실행)
      */
 //    @Scheduled(cron = "0 0 0 * * MON")
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void updateHospitalAndEmergencyInfo() {
         log.info("Starting weekly update for hospitals and emergency info...");
         try {
@@ -30,7 +30,7 @@ public class SchedulerService {
     /**
      * 2. 5분마다 HospitalBedAvailability 업데이트
      */
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void updateBedAvailability() {
         log.info("Starting 5-minute update for hospital bed availability...");
         try {
@@ -40,5 +40,20 @@ public class SchedulerService {
             log.error("Error during 5-minute update: {}", e.getMessage(), e);
         }
     }
+
+    // 새로운 스케줄 작업 추가
+    @Scheduled(cron = "*/30 * * * * *") // 매일 새벽 2시에 실행
+    public void calculateAndStoreUtilizationRates() {
+        log.info("Starting hospital bed utilization rate calculation...");
+        try {
+            apiTestService.calculateAndStoreUtilizationRatesInSecondDB();
+            log.info("Hospital bed utilization rate calculation completed.");
+        } catch (Exception e) {
+            log.error("Error during hospital bed utilization rate calculation: {}", e.getMessage(), e);
+        }
+    }
+
+
+
 }
 

@@ -2,18 +2,18 @@ package com.example.entity;
 
 import javax.persistence.*;
 
-import com.example.entity.Hospitals;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name = "hospital_bed_availability_local")
 public class HospitalBedAvailability {
 
     @Id
     @Column(name = "hospital_id")
-    private Long hospitalId;
+    private String hospitalId;
 
     @OneToOne
     @MapsId
@@ -197,11 +197,120 @@ public class HospitalBedAvailability {
     @Column(name = "hvs01")
     private Integer hvs01; // 일반 병상 기준
 
+    @Column(name = "hvs03")
+    private Integer hvs03; // 응급실 음압 격리 병상 기준
+
+    @Column(name = "hvs04")
+    private Integer hvs04; // 응급실 일반 격리 병상 기준
+
+    @Column(name = "hvs05")
+    private Integer hvs05; // 응급전용 중환자실 기준
+
+    @Column(name = "hvs06")
+    private Integer hvs06; // 내과 중환자실 기준
+
+    @Column(name = "hvs07")
+    private Integer hvs07; // 외과 중환자실 기준
+
+    @Column(name = "hvs08")
+    private Integer hvs08; // 신생아 중환자실 기준
+
+    @Column(name = "hvs09")
+    private Integer hvs09; // 소아 중환자실 기준
+
+    @Column(name = "hvs10")
+    private Integer hvs10; // 응급전용 소아중환자실 기준
+
+    @Column(name = "hvs11")
+    private Integer hvs11; // 신경과 중환자실 기준
+
+    @Column(name = "hvs12")
+    private Integer hvs12; // 신경외과 중환자실 기준
+
+    @Column(name = "hvs13")
+    private Integer hvs13; // 화상 중환자실 기준
+
+    @Column(name = "hvs14")
+    private Integer hvs14; // 외상 중환자실 기준
+
+    @Column(name = "hvs15")
+    private Integer hvs15; // 심장내과 중환자실 기준
+
+    @Column(name = "hvs16")
+    private Integer hvs16; // 흉부외과 중환자실 기준
+
+    @Column(name = "hvs17")
+    private Integer hvs17; // 일반 중환자실 기준
+
+    @Column(name = "hvs18")
+    private Integer hvs18; // 음압격리 중환자실 기준
+
+    @Column(name = "hvs19")
+    private Integer hvs19; // 응급전용 입원실 기준
+
+    @Column(name = "hvs20")
+    private Integer hvs20; // 응급전용 소아입원실 기준
+
+    @Column(name = "hvs21")
+    private Integer hvs21; // 외상전용 입원실 기준
+
+    @Column(name = "hvs22")
+    private Integer hvs22; // 수술실 기준
+
+    @Column(name = "hvs23")
+    private Integer hvs23; // 외상전용 수술실 기준
+
+    @Column(name = "hvs25")
+    private Integer hvs25; // 음압격리 입원실 기준
+
+    @Column(name = "hvs46")
+    private Integer hvs46; // 격리진료구역 음압 격리 병상 기준
+
+    @Column(name = "hvs47")
+    private Integer hvs47; // 격리진료구역 일반 격리 병상 기준
+
+    @Column(name = "hvs48")
+    private Integer hvs48; // 소아 음압 격리 기준
+
+    @Column(name = "hvs49")
+    private Integer hvs49; // 소아 일반 격리 기준
+
+    @Column(name = "hvs50")
+    private Integer hvs50; // 응급전용 중환자실 음압 격리 기준
+
+    @Column(name = "hvs51")
+    private Integer hvs51; // 응급전용 중환자실 일반 격리 기준
+
+    @Column(name = "hvs52")
+    private Integer hvs52; // 응급전용 입원실 음압 격리 기준
+
+    @Column(name = "hvs53")
+    private Integer hvs53; // 응급전용 입원실 일반 격리 기준
+
+    @Column(name = "hvs54")
+    private Integer hvs54; // 감염병 전담병상 중환자실 기준
+
+    @Column(name = "hvs55")
+    private Integer hvs55; // 감염병 전담병상 중환자실 내 음압 격리 기준
+
+    @Column(name = "hvs56")
+    private Integer hvs56; // 감염 중증 병상 기준
+
+    @Column(name = "hvs57")
+    private Integer hvs57; // 감염 준-중증 병상 기준
+
+    @Column(name = "hvs58")
+    private Integer hvs58; // 감염 중등증 병상 기준
+
+    @Column(name = "hvs59")
+    private Integer hvs59; // 코호트 격리 기준
+
     @Column(name = "hvidate")
     private String hvidate; // 병상 정보 업데이트 시간
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now(); // 데이터 수정 시간
+
 }
 
 

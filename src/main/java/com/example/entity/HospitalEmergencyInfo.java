@@ -2,7 +2,6 @@ package com.example.entity;
 
 import javax.persistence.*;
 
-import com.example.entity.Hospitals;
 import lombok.Data;
 
 @Entity
