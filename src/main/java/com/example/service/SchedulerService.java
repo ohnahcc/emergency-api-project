@@ -42,7 +42,8 @@ public class SchedulerService {
     }
 
     // 새로운 스케줄 작업 추가
-    @Scheduled(cron = "0 */5 * * * *")
+//    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void calculateAndStoreUtilizationRates() {
         log.info("Starting hospital bed utilization rate calculation...");
         try {
@@ -54,7 +55,8 @@ public class SchedulerService {
     }
 
     // 새로운 스케줄 작업 추가
-    @Scheduled(cron = "0 */5 * * * *")
+//    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void calculateUtilizationRates() {
         log.info("Starting hospital bed utilization rate calculation...");
         try {
