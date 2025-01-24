@@ -5,14 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
+@Repository
 public interface SecondHospitalBedAvailabilityRateRepository extends JpaRepository<SecondHospitalBedAvailabilityRate, String> {
 
 
     @Modifying
-    @Query(value = "INSERT INTO hospital_bed_availability_rate (" +
+    @Query(value = "INSERT INTO hospital_bed_operation_rate (" +
             "hpid, hv5, hv7, hv10, hv11, hv42, hv43, hvctayn, hvmriayn, hvangioayn, hvventiayn, hvventisoayn, hvincuayn, " +
             "hvcrrtayn, hvecmoayn, hvoxyayn, hvhypoayn, hvamyn, hvec_rate, hv29_rate, hv30_rate, hv31_rate, hv2_rate, hv3_rate, " +
             "hvncc_rate, hv32_rate, hv33_rate, hvcc_rate, hv6_rate, hv8_rate, hv9_rate, hv34_rate, hvccc_rate, hvicc_rate, " +

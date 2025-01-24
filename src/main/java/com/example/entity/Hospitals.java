@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name = "hospitals")
 public class Hospitals {
     @Id
     @Column(name = "hpid", nullable = false, unique = true) // 기본 키 설정

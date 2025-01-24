@@ -1,0 +1,34 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # 애플리케이션 포트 매핑
+    depends_on:
+      - db1
+    environment:
+      SPRING_DATASOURCE_JDBC_URL: jdbc:postgresql://db1:5432/emergency_api
+      SPRING_DATASOURCE_USERNAME: api_user
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_SECOND_DATASOURCE_JDBC_URL: jdbc:postgresql://192.168.0.63:54322/postgres
+      SPRING_SECOND_DATASOURCE_USERNAME: chanho
+      SPRING_SECOND_DATASOURCE_PASSWORD: 1234
+    networks:
+      - app-network
+
+  db1:
+    image: postgres:15
+    container_name: postgres-db1
+    environment:
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: emergency_api
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

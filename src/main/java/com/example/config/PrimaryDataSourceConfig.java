@@ -38,7 +38,7 @@ public class PrimaryDataSourceConfig {
     public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
             EntityManagerFactoryBuilder builder, @Qualifier("primaryDataSource") DataSource dataSource) {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
         return builder
                 .dataSource(dataSource)
                 .packages("com.example.entity")
