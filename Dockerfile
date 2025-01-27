@@ -1,3 +1,5 @@
+RUN apt-get update && apt-get install -y postgresql-client
+
 # 1단계: Maven을 이용해 빌드
 FROM maven:3.8-openjdk-11 AS build
 WORKDIR /app
