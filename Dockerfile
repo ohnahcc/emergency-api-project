@@ -1,5 +1,5 @@
 # 1단계: Maven을 이용해 빌드
-FROM maven:3.8.8-openjdk-11 AS build
+FROM maven:3.8-openjdk-11 AS build
 WORKDIR /app
 
 # Maven 의존성 캐싱을 위해 먼저 pom.xml 복사
