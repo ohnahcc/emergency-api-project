@@ -11,9 +11,9 @@ services:
       SPRING_DATASOURCE_JDBC_URL: jdbc:postgresql://db1:5432/emergency_api
       SPRING_DATASOURCE_USERNAME: api_user
       SPRING_DATASOURCE_PASSWORD: 1234
-      SPRING_SECOND_DATASOURCE_JDBC_URL: jdbc:postgresql://test:5432/test
-      SPRING_SECOND_DATASOURCE_USERNAME: test
-      SPRING_SECOND_DATASOURCE_PASSWORD: test
+      SPRING_SECOND_DATASOURCE_JDBC_URL: jdbc:postgresql://192.168.0.63:54322/postgres
+      SPRING_SECOND_DATASOURCE_USERNAME: chanho
+      SPRING_SECOND_DATASOURCE_PASSWORD: 1234
     networks:
       - app-network
 
