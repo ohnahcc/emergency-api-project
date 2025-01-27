@@ -1,29 +1,27 @@
-# 1단계: Maven을 이용해 빌드
-FROM maven:3.9.9-openjdk-11 AS build
+# Maven 빌드 환경 (Java 11)
+FROM maven:3.9.9-amazoncorretto-11-alpine AS builder
 
-RUN apt-get update && apt-get install -y postgresql-client
+# PostgreSQL 클라이언트 설치
+RUN apk add --no-cache postgresql-client
 
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# Maven 의존성 캐싱을 위해 먼저 pom.xml 복사
-COPY pom.xml ./
+# Maven 프로젝트 복사
+COPY . .
 
-# 의존성을 다운로드
-RUN mvn dependency:go-offline
+# 프로젝트 빌드
+RUN mvn package -DskipTests
 
-# 애플리케이션 소스를 복사하고 빌드 실행
-COPY src ./src
-RUN mvn clean package -DskipTests
+# 런타임 환경 (Amazon Corretto 11)
+FROM amazoncorretto:11-alpine
 
-# 2단계: JAR 파일을 실행하는 이미지 생성
-FROM openjdk:11-jdk-slim
-WORKDIR /app
+# 빌드 결과물 복사
+COPY --from=builder /app/target/*.jar /app/your-application.jar
 
-# 빌드된 JAR 파일 복사
-COPY --from=build /app/target/emergency-api-project-1.0-SNAPSHOT.jar ./your-application.jar
+# 애플리케이션 실행
+CMD ["java", "-jar", "/app/your-application.jar"]
 
-# 애플리케이션 실행 명령어
-ENTRYPOINT ["java", "-jar", "your-application.jar"]
 
 # 애플리케이션에서 사용하는 포트를 노출
 EXPOSE 8080
